@@ -62,8 +62,6 @@ public class MainActivity extends ActionBarActivity {
             Log.e(LOG_TAG, e.getMessage());
         }
 
-
-
 //        for(String name : mCursor.getColumnNames()) {
 //            log(name);
 //        }
