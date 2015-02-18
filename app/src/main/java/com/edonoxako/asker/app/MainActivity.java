@@ -13,22 +13,11 @@ import android.view.View;
 import android.widget.*;
 
 
-public class MainActivity extends ActionBarActivity {
-
-    private String CALL_CODE = "*144*";
-    private String MONEY_CODE = "*143*";
+public class MainActivity extends ActionBarActivity implements AppCallback {
 
     ListView mContactsList;
 
-    //Query parameters
-    String contactProjection[] = new String[]{
-            ContactsContract.Contacts._ID,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER
-    };
-
-    String contactClause = ContactsContract.Contacts.HAS_PHONE_NUMBER + " = ?";
-    String contactArgs[] = new String[] {"1"};
+    AppLogic logic;
 
     String mColumns[] = new String[]{
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
@@ -49,29 +38,8 @@ public class MainActivity extends ActionBarActivity {
 
         mContactsList = (ListView) findViewById(R.id.contactList);
 
-        Cursor mCursor = getContactsNames();
-//        mCursor.moveToFirst();
-//        while (mCursor.moveToNext()) {
-//            String name = mCursor.getString(mCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-//            String id = mCursor.getString(mCursor.getColumnIndex(ContactsContract.Contacts._ID));
-//            log(name + " " + id);
-//        }
-
-        try {
-            SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                    this,
-                    R.layout.contact_list_item,
-                    mCursor,
-                    mColumns,
-                    mViews,
-                    0
-            );
-            adapter.setViewBinder(new TagViewBinder());
-            mContactsList.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(LOG_TAG, e.getMessage());
-        }
+        logic = new AppLogic(this, this);
+        logic.start();
     }
 
     @Override
@@ -96,61 +64,47 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Get contacts data here
-    private Cursor getContactsNames() {
-        return getContentResolver().query(
-                ContactsContract.Contacts.CONTENT_URI,
-                contactProjection,
-                contactClause,
-                contactArgs,
-                null
-        );
-    }
-
-    private String getNumberForContact(String id) {
-        Cursor cursor = getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI,
-                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-                ContactsContract.Data.CONTACT_ID + " = ?" + " AND "
-                        + ContactsContract.Data.MIMETYPE + "='" + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'",
-                new String[] {id},
-                null
-        );
-        log("" + cursor.getCount());
-        cursor.moveToFirst();
-        return cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-    }
-
     //Handling buttons clicks
     public void OnButtonClicked(View v) {
         LinearLayout textLayout;
-        String text;
         String id;
-        String phoneNumber;
 
         switch (v.getId()) {
             case R.id.askForCallBtn:
                 textLayout = (LinearLayout) ((LinearLayout) v.getParent().getParent()).getChildAt(0);
-                text = (String) ((TextView) textLayout.getChildAt(0)).getText();
                 id = (String) textLayout.getChildAt(0).getTag();
-                phoneNumber = getNumberForContact(id);
-                log("Позвони мне " + text + " number = " + phoneNumber);
-                createAndSendRequest(phoneNumber, true);
+                logic.askForPhoneCall(id);
                 break;
 
             case R.id.askForMoneyBtn:
                 textLayout = (LinearLayout) ((LinearLayout) v.getParent().getParent()).getChildAt(0);
-                text = (String) ((TextView) textLayout.getChildAt(0)).getText();
                 id = (String) textLayout.getChildAt(0).getTag();
-                phoneNumber = getNumberForContact(id);
-                log("Дай мне денег " + text);
-                createAndSendRequest(phoneNumber, false);
+                logic.askForMoney(id);
                 break;
         }
     }
 
     private void log (String msg) {
         Log.d(LOG_TAG, msg);
+    }
+
+    @Override
+    public void onContactObtained(Cursor contacts) {
+        try {
+            SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                    this,
+                    R.layout.contact_list_item,
+                    contacts,
+                    mColumns,
+                    mViews,
+                    0
+            );
+            adapter.setViewBinder(new TagViewBinder());
+            mContactsList.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, e.getMessage());
+        }
     }
 
     //This binder is used for saving the ID of the contact in the tag of name's TextView
@@ -169,17 +123,4 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void createAndSendRequest(String number, boolean isCall) {
-        if (isCall) {
-            number = "tel:" + CALL_CODE + number.trim() + "%23";
-        } else {
-            number = "tel:" + MONEY_CODE + number.trim() + "%23";
-        }
-        Log.d(LOG_TAG, number);
-
-        String uri = number;
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse(uri));
-        startActivity(intent);
-    }
 }
