@@ -1,4 +1,4 @@
-package com.edonoxako.asker.app;
+package com.edonoxako.asker.app.logic;
 
 import android.database.Cursor;
 

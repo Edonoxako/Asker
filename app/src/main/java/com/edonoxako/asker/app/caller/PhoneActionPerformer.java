@@ -1,4 +1,4 @@
-package com.edonoxako.asker.app;
+package com.edonoxako.asker.app.caller;
 
 /**
  * Created by Eugene on 18.02.2015.

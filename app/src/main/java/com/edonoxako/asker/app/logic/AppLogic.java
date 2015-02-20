@@ -1,7 +1,12 @@
-package com.edonoxako.asker.app;
+package com.edonoxako.asker.app.logic;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
+import com.edonoxako.asker.app.caller.PhoneActionPerformer;
+import com.edonoxako.asker.app.caller.PhoneCaller;
+import com.edonoxako.asker.app.data.ContactDataRepository;
+import com.edonoxako.asker.app.data.ContactInteractor;
 
 /**
  * Created by Eugene on 18.02.2015.

@@ -1,8 +1,7 @@
-package com.edonoxako.asker.app;
+package com.edonoxako.asker.app.data;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.util.Log;
 
