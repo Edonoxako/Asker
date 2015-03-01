@@ -1,5 +1,6 @@
 package com.edonoxako.asker.app.gui;
 
+import android.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +13,7 @@ import com.edonoxako.asker.app.gui.contactsadapter.ContactsListener;
 import com.edonoxako.asker.app.R;
 
 
-public class MainActivity extends ActionBarActivity implements ContactsListener {
+public class MainActivity extends ActionBarActivity implements ContactsListener, NumberChoosingDialog.NumberChoosingListener {
 
     private ListView mContactsList;
     private ContactsAdapter contactsAdapter;
@@ -60,9 +61,6 @@ public class MainActivity extends ActionBarActivity implements ContactsListener 
 
     //Handling buttons clicks
     public void OnButtonClicked(View v) {
-        LinearLayout textLayout;
-        String id;
-
         switch (v.getId()) {
             case R.id.askForCallBtn:
                 contactsAdapter.askForCall(v);
@@ -76,5 +74,10 @@ public class MainActivity extends ActionBarActivity implements ContactsListener 
 
     private void log (String msg) {
         Log.d(LOG_TAG, msg);
+    }
+
+    @Override
+    public void onNumberSelected(String number) {
+        contactsAdapter.selectedNumber(number);
     }
 }

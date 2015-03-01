@@ -1,5 +1,6 @@
 package com.edonoxako.asker.app.gui.contactsadapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import com.edonoxako.asker.app.R;
+import com.edonoxako.asker.app.gui.NumberChoosingDialog;
 import com.edonoxako.asker.app.logic.AppCallback;
 import com.edonoxako.asker.app.logic.AppLogic;
 
@@ -16,9 +18,11 @@ import com.edonoxako.asker.app.logic.AppLogic;
 public class ContactsAdapter implements AppCallback {
 
     private Context mContext;
+    private Activity mActivity;
     private ContactsListener mListener;
     private TagViewBinder mBinder;
     private AppLogic mLogic;
+    private boolean isPhoneCallAsking;
 
     private String mColumns[] = new String[]{
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
@@ -29,12 +33,13 @@ public class ContactsAdapter implements AppCallback {
     };
 
 
-    public ContactsAdapter(Context context, ContactsListener listener) {
-        this.mContext = context;
+    public ContactsAdapter(Activity activity, ContactsListener listener) {
+        this.mActivity = activity;
+        this.mContext = (Context) activity;
         this.mListener = listener;
 
         mBinder = new TagViewBinder();
-        mLogic = new AppLogic(context, this);
+        mLogic = new AppLogic(mContext, this);
     }
 
     public void start() {
@@ -42,11 +47,13 @@ public class ContactsAdapter implements AppCallback {
     }
 
     public void askForCall(View v) {
+        isPhoneCallAsking = true;
         String id = extractID(v);
         mLogic.askForPhoneCall(id);
     }
 
     public void askForMoney(View v) {
+        isPhoneCallAsking = false;
         String id = extractID(v);
         mLogic.askForMoney(id);
     }
@@ -71,4 +78,14 @@ public class ContactsAdapter implements AppCallback {
         mListener.onContactsAdapterObtained(adapter);
     }
 
+    @Override
+    public void onTwoPhoneNumbers(String[] numbers) {
+        NumberChoosingDialog dialog = NumberChoosingDialog.createInstance(numbers);
+        dialog.show(mActivity.getFragmentManager(), "NumberChoosing");
+    }
+
+    public void selectedNumber (String number) {
+        if (isPhoneCallAsking) mLogic.phoneCall(number);
+        else mLogic.moneyCall(number);
+    }
 }

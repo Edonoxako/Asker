@@ -7,4 +7,5 @@ import android.database.Cursor;
  */
 public interface AppCallback {
     public void onContactObtained(Cursor contacts);
+    public void onTwoPhoneNumbers(String[] numbers);
 }

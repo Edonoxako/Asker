@@ -7,5 +7,5 @@ import android.database.Cursor;
  */
 public interface ContactDataRepository {
     public Cursor getContacts();
-    public String getContactNumber(String id);
+    public String[] getContactNumber(String id);
 }

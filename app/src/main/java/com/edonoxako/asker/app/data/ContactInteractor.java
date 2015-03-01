@@ -40,7 +40,7 @@ public class ContactInteractor implements ContactDataRepository {
     }
 
     @Override
-    public String getContactNumber(String id) {
+    public String[] getContactNumber(String id) {
         Cursor cursor = mContext.getContentResolver().query(
                 ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
@@ -50,8 +50,16 @@ public class ContactInteractor implements ContactDataRepository {
                 null
         );
         log("" + cursor.getCount());
+
+        String[] numbers = new String[cursor.getCount()];
+        int i = 0;
         cursor.moveToFirst();
-        return cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        do {
+            numbers[i] = (cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))).trim();
+            i++;
+        }while (cursor.moveToNext());
+
+        return numbers;
     }
 
     private void log (String msg) {

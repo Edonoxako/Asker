@@ -3,6 +3,7 @@ package com.edonoxako.asker.app.caller;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by Eugene on 18.02.2015.

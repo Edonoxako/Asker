@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Asker</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="specify_number">Укажите номер</string>
+    <string name="action_settings">Настройки</string>
 
 </resources>
