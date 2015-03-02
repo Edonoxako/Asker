@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import com.edonoxako.asker.app.R;
-import com.edonoxako.asker.app.gui.NumberChoosingDialog;
+import com.edonoxako.asker.app.gui.dialogs.NumberChoosingDialog;
 import com.edonoxako.asker.app.logic.AppCallback;
 import com.edonoxako.asker.app.logic.AppLogic;
 

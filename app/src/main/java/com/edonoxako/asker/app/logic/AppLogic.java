@@ -25,11 +25,6 @@ public class AppLogic {
         this.appCallback = callback;
     }
 
-    public void start() {
-        Cursor cursor = contactRepository.getContacts();
-        appCallback.onContactObtained(cursor);
-    }
-
     private boolean isOneNumber(String id) {
         numbers = contactRepository.getContactNumber(id);
         Log.d("magic", numbers[0]);
@@ -39,6 +34,11 @@ public class AppLogic {
         } else {
             return true;
         }
+    }
+
+    public void start() {
+        Cursor cursor = contactRepository.getContacts();
+        appCallback.onContactObtained(cursor);
     }
 
     public void askForPhoneCall(String id) {

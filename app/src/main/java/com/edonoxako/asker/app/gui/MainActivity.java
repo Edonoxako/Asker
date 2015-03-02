@@ -1,6 +1,5 @@
 package com.edonoxako.asker.app.gui;
 
-import android.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,15 +7,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.edonoxako.asker.app.caller.mobileoperator.MobileOperator;
+import com.edonoxako.asker.app.caller.mobileoperator.MobileOperatorCallback;
+import com.edonoxako.asker.app.caller.mobileoperator.Operator;
 import com.edonoxako.asker.app.gui.contactsadapter.ContactsAdapter;
 import com.edonoxako.asker.app.gui.contactsadapter.ContactsListener;
 import com.edonoxako.asker.app.R;
+import com.edonoxako.asker.app.gui.dialogs.NumberChoosingDialog;
+import com.edonoxako.asker.app.gui.dialogs.OperatorVerifyingDialog;
 
 
-public class MainActivity extends ActionBarActivity implements ContactsListener, NumberChoosingDialog.NumberChoosingListener {
+public class MainActivity extends ActionBarActivity implements ContactsListener, NumberChoosingDialog.NumberChoosingListener, MobileOperatorCallback,
+        OperatorVerifyingDialog.OperatorVerifyingListener {
 
     private ListView mContactsList;
     private ContactsAdapter contactsAdapter;
+    private MobileOperator mobileOperator;
 
     private String LOG_TAG = "magic";
 
@@ -27,6 +33,9 @@ public class MainActivity extends ActionBarActivity implements ContactsListener,
         setContentView(R.layout.activity_main);
 
         mContactsList = (ListView) findViewById(R.id.contactList);
+
+        mobileOperator = new Operator(this);
+        mobileOperator.init(this);
 
         contactsAdapter = new ContactsAdapter(this, this);
         contactsAdapter.start();
@@ -79,5 +88,16 @@ public class MainActivity extends ActionBarActivity implements ContactsListener,
     @Override
     public void onNumberSelected(String number) {
         contactsAdapter.selectedNumber(number);
+    }
+
+    @Override
+    public void onOperatorNameObtained(String operatorName) {
+        OperatorVerifyingDialog dialog = OperatorVerifyingDialog.createInstance(operatorName);
+        dialog.show(getFragmentManager(), "operatorVerifying");
+    }
+
+    @Override
+    public void onSelectOperatorBtn() {
+        log("Выбираем оператора");
     }
 }

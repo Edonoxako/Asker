@@ -1,4 +1,4 @@
-package com.edonoxako.asker.app.gui;
+package com.edonoxako.asker.app.gui.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
