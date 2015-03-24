@@ -7,6 +7,6 @@ import java.util.Map;
  */
 public interface MobileOperator {
     public void init(MobileOperatorCallback callback);
-    public Map<String, String> getSpecSymbols();
+    public String[] getSpecSymbols();
     public void setOperator(String operatorName);
 }

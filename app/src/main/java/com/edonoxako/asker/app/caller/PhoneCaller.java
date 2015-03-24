@@ -4,18 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import com.edonoxako.asker.app.caller.mobileoperator.MobileOperator;
+import com.edonoxako.asker.app.caller.mobileoperator.Operator;
 
 /**
  * Created by Eugene on 18.02.2015.
  */
 public class PhoneCaller implements PhoneActionPerformer {
-    private String CALL_CODE = "*144*";
-    private String MONEY_CODE = "*143*";
+    private String CALL_CODE;
+    private String MONEY_CODE;
 
     private Context mContext;
 
     public PhoneCaller(Context context) {
         this.mContext = context;
+
+        MobileOperator operator = new Operator(context);
+        CALL_CODE = operator.getSpecSymbols()[0];
+        MONEY_CODE = operator.getSpecSymbols()[1];
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.edonoxako.asker.app.gui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +16,17 @@ import com.edonoxako.asker.app.gui.contactsadapter.ContactsAdapter;
 import com.edonoxako.asker.app.gui.contactsadapter.ContactsListener;
 import com.edonoxako.asker.app.R;
 import com.edonoxako.asker.app.gui.dialogs.NumberChoosingDialog;
+import com.edonoxako.asker.app.gui.dialogs.OperatorChoosingDialog;
 import com.edonoxako.asker.app.gui.dialogs.OperatorVerifyingDialog;
 
 
 public class MainActivity extends ActionBarActivity implements ContactsListener, NumberChoosingDialog.NumberChoosingListener, MobileOperatorCallback,
         OperatorVerifyingDialog.OperatorVerifyingListener {
+
+    private final String APP_PREFERENCE = "options";
+    private final String FIRST_LAUNCH_OPTION = "firstLaunch";
+
+    private boolean isFirstLaunch;
 
     private ListView mContactsList;
     private ContactsAdapter contactsAdapter;
@@ -31,14 +39,19 @@ public class MainActivity extends ActionBarActivity implements ContactsListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSettings();
 
         mContactsList = (ListView) findViewById(R.id.contactList);
 
-        mobileOperator = new Operator(this);
-        mobileOperator.init(this);
-
-        contactsAdapter = new ContactsAdapter(this, this);
-        contactsAdapter.start();
+        if (isFirstLaunch) {
+            mobileOperator = new Operator(this);
+            mobileOperator.init(this);
+            SharedPreferences.Editor editor = getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE).edit();
+            editor.putBoolean(FIRST_LAUNCH_OPTION, false).apply();
+        } else {
+            contactsAdapter = new ContactsAdapter(this, this);
+            contactsAdapter.start();
+        }
     }
 
     @Override
@@ -94,10 +107,19 @@ public class MainActivity extends ActionBarActivity implements ContactsListener,
     public void onOperatorNameObtained(String operatorName) {
         OperatorVerifyingDialog dialog = OperatorVerifyingDialog.createInstance(operatorName);
         dialog.show(getFragmentManager(), "operatorVerifying");
+        contactsAdapter = new ContactsAdapter(this, this);
+        contactsAdapter.start();
     }
 
     @Override
     public void onSelectOperatorBtn() {
-        log("Выбираем оператора");
+        OperatorChoosingDialog dialog = new OperatorChoosingDialog();
+        dialog.show(getFragmentManager(), "operatorChoosing");
     }
+
+    private void getSettings() {
+        SharedPreferences sPrefs = getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE);
+        isFirstLaunch = sPrefs.getBoolean(FIRST_LAUNCH_OPTION, true);
+    }
+
 }

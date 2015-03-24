@@ -5,4 +5,14 @@
     <string name="specify_number">Укажите номер</string>
     <string name="action_settings">Настройки</string>
 
+    <array name="operators">
+        <item>MegaFon</item>
+        <item>Bodun</item>
+    </array>
+
+    <array name="specSymbols">
+        <item>*144*_*143*</item>
+        <item>*111*_*222*</item>
+    </array>
+
 </resources>
