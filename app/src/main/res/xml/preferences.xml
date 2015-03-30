@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="operatorName"
+        android:title="Выберите оператора"
+        android:defaultValue="MegaFon"
+        android:entries="@array/operators"
+        android:entryValues="@array/operators" />
+</PreferenceScreen>

@@ -3,6 +3,7 @@ package com.edonoxako.asker.app.caller.mobileoperator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import com.edonoxako.asker.app.R;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
 /**
  * Created by EugeneM on 02.03.2015.
  */
-public class Operator implements MobileOperator {
+public class Operator implements MobileOperator, SharedPreferences.OnSharedPreferenceChangeListener {
     private Map <String, String> symbols;
 
     private final String APP_PREFERENCE = "options";
@@ -19,6 +20,7 @@ public class Operator implements MobileOperator {
 
     private Context mContext;
     private String mOperatorName;
+    private SharedPreferences sPrefs;
 
 
     public Operator(Context context) {
@@ -57,5 +59,17 @@ public class Operator implements MobileOperator {
         SharedPreferences.Editor e = mContext.getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE).edit();
         e.putString(MOBILE_OPERATOR_NAME, operatorName).apply();
         mOperatorName = operatorName;
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(MOBILE_OPERATOR_NAME)) {
+            Log.d("magic", "ура, работает");
+        }
     }
 }

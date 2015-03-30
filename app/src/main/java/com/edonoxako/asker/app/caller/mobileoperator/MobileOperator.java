@@ -9,4 +9,5 @@ public interface MobileOperator {
     public void init(MobileOperatorCallback callback);
     public String[] getSpecSymbols();
     public void setOperator(String operatorName);
+    public void destroy();
 }
